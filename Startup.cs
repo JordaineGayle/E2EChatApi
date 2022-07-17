@@ -1,6 +1,7 @@
 using E2ECHATAPI.Services.MessageServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +46,26 @@ namespace E2ECHATAPI
                 jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("cors", builder => builder.WithOrigins("*", "http://localhost", "http://localhost:3000")
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed((host) => true));
+            });
+
+
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.StreamBufferCapacity = 30;
+                hubOptions.MaximumReceiveMessageSize = int.MaxValue;
+                hubOptions.MaximumParallelInvocationsPerClient = 100;
+            }).AddJsonProtocol(options => {
+                options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+            });
+
             //not the best thing to do
             RoomClient.Instance = services.BuildServiceProvider().GetService<RoomClient>();
 
@@ -59,6 +80,8 @@ namespace E2ECHATAPI
                 
             }
 
+            app.UseCors("cors");
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "E2ECHATAPI v1"));
 
@@ -71,6 +94,16 @@ namespace E2ECHATAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapHub<RoomHub>("/e2echat", (e) =>
+                {
+                    e.Transports =
+                    HttpTransportType.WebSockets |
+                    HttpTransportType.LongPolling |
+                    HttpTransportType.ServerSentEvents;
+                    e.TransportMaxBufferSize = int.MaxValue;
+                    e.ApplicationMaxBufferSize = int.MaxValue;
+                });
             });
         }
     }
