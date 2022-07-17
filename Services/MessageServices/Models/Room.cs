@@ -17,6 +17,7 @@ namespace E2ECHATAPI.Services.MessageServices
         public int? Limit { get; set; }
         public bool ReadReceipt { get; set; }
         public bool Reactions { get;  set; }
+        public bool PrivateRoom { get;  set; }
     }
 
     /// <summary>
@@ -28,6 +29,7 @@ namespace E2ECHATAPI.Services.MessageServices
         public string OwnerId { get; private set; }
         public string Topic { get; private set; }
         public string Description { get; set; }
+        public bool Private { get; set; }
         public bool LimitedReached => !RoomConfiguration.IsUnlimited ? Users.Count == RoomConfiguration.Limit : false;
         public RoomConfiguration RoomConfiguration { get; private set; }
         public IList<MessageUser> Users { get; private set; } = new List<MessageUser>() { };
@@ -53,6 +55,7 @@ namespace E2ECHATAPI.Services.MessageServices
             this.OwnerId = owner.id;
             this.Topic = request.Topic;
             this.Description = request.Description;
+            this.Private = request.PrivateRoom;
             this.RoomConfiguration = new(request.Limit, request.ReadReceipt, request.Reactions);
             this.Users.Add(owner.CreateMessageUser(true));
             this.LastModified = DateTimeOffset.UtcNow;

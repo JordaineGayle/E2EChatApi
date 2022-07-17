@@ -24,6 +24,12 @@ namespace E2ECHATAPI.Services.MessageServices
         public IEnumerable<Room> GetRoomsByUserId(string id);
 
         /// <summary>
+        /// Gets all room that were created
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Room> GetAllRooms();
+
+        /// <summary>
         /// Creates or update a room in the database
         /// </summary>
         /// <param name="item"></param>
@@ -75,6 +81,9 @@ namespace E2ECHATAPI.Services.MessageServices
         public IEnumerable<Room> GetRoomsByUserId(string id)
             => rooms.Values.Where(x => x.Users.ToList().Exists(u => u.id.EqualsIgnoreCase(id)));
 
+        public IEnumerable<Room> GetAllRooms()
+            => rooms.Values;
+
         public async Task<Room> UpsertAsync(Room item)
         {
             Contracts.RequiresNotNull(item, "room to be updated is required.");
@@ -91,5 +100,6 @@ namespace E2ECHATAPI.Services.MessageServices
             return room;
         }
 
+       
     }
 }

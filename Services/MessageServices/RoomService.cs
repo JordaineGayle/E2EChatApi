@@ -44,9 +44,16 @@ namespace E2ECHATAPI.Services.MessageServices
             return room;
         }
 
-        public IEnumerable<Room> GetRoomsByUserAsync(RequestContext ctx)
+        public IEnumerable<Room> GetRoomsByUser(RequestContext ctx)
         {
             var rooms = db.GetRoomsByUserId(ctx.User.id);
+            return rooms;
+        }
+
+        public IEnumerable<Room> GetPublicRooms(RequestContext ctx)
+        {
+            var rooms = db.GetAllRooms()
+                .Where(s => !s.Private);
             return rooms;
         }
 
@@ -111,10 +118,10 @@ namespace E2ECHATAPI.Services.MessageServices
             await hub.Clients.GroupExcept(room.id, connectionId).Left(ctx.MessageUser);
         }
 
-        public async Task SendMessageAsync(RequestContext ctx, ChatMessage message)
+        public async Task<MessageBody> SendMessageAsync(RequestContext ctx, string roomId, ChatMessage message)
         {
             var connectionId = GetConnectionId(ctx);
-            var room = db.Get(message?.RoomId);
+            var room = db.Get(roomId);
             User to = null;
             if(!(message?.Receiver?.IsNullOrEmptyWhitespace()??false))
             {
@@ -124,6 +131,7 @@ namespace E2ECHATAPI.Services.MessageServices
             room.AddMessage(msgBody);
             room = await db.UpsertAsync(room);
             await hub.Clients.GroupExcept(room.id,connectionId).MessageReceived(msgBody);
+            return msgBody;
         }
 
 
