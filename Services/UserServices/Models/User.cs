@@ -1,5 +1,6 @@
 ﻿using E2ECHATAPI.Helpers;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace E2ECHATAPI.Services.UserServices
 {
@@ -127,7 +128,7 @@ namespace E2ECHATAPI.Services.UserServices
     /// <summary>
     /// Registration request entity
     /// </summary>
-    public record RegisterUserRequest(string Email, string Password, string FirstName, string LastName, string Avatar);
+    public record RegisterUserRequest([Required]string Email, [Required] string Password, [Required] string FirstName, [Required] string LastName, string Avatar);
 
     /// <summary>
     /// Message user entity

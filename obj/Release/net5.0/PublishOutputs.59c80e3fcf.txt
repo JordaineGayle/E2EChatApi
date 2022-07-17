@@ -1,0 +1,11 @@
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\E2ECHATAPI.exe
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\appsettings.Development.json
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\appsettings.json
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\E2ECHATAPI.dll
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\E2ECHATAPI.deps.json
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\E2ECHATAPI.runtimeconfig.json
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\E2ECHATAPI.pdb
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\Microsoft.OpenApi.dll
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
