@@ -1,4 +1,5 @@
 ﻿using E2ECHATAPI.Helpers;
+using E2ECHATAPI.Services.UserServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
