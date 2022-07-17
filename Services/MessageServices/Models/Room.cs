@@ -1,4 +1,5 @@
 ﻿using E2ECHATAPI.Helpers;
+using E2ECHATAPI.Services.UserServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,10 +109,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="user"></param>
         public void JoinRoom(MessageUser user)
         {
-            //Contracts.RequiresNotNull(user, "user is required to add to the room");
-            //var messageUser = user.CreateMessageUser();
-            //this.Users.Add(messageUser);
-            //broadcast new user added
+
         }
 
         /// <summary>
