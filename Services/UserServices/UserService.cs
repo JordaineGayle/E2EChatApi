@@ -8,9 +8,9 @@ namespace E2ECHATAPI.Services.UserServices
 {
     public class UserService
     {
-        readonly IUserRespository db;
+        readonly IUserRepository db;
 
-        private UserService(IUserRespository db)
+        private UserService(IUserRepository db)
         {
             this.db = db;
         }
@@ -20,7 +20,7 @@ namespace E2ECHATAPI.Services.UserServices
         /// </summary>
         public static readonly Lazy<Task<UserService>> Instance = new(async () =>
         {
-            var db = await UserRespository.Instance.Value;
+            var db = await UserRepository.Instance.Value;
             return new(db);
         }, true);
 

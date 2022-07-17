@@ -25,13 +25,13 @@ namespace E2ECHATAPI.Helpers
         {
             var exist = controller.HttpContext.Request.Headers.TryGetValue("ApiKey", out StringValues item);
             if (!exist)
-                throw new UnauthorizedAccessException($"Api key is required.");
+                throw new UnauthorizedAccessException($"ApiKey is required.");
 
             var userId = item.ToString();
             var svc = UserService.Instance.Value.Result;
             var user = svc.TryGetUser(userId);
             if (user == null)
-                throw new UnauthorizedAccessException($"invalid api key, unable to find user.");
+                throw new UnauthorizedAccessException($"invalid apikey, unable to find user.");
 
             return new RequestContext
             {

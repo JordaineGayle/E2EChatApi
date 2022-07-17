@@ -12,15 +12,52 @@ namespace E2ECHATAPI.Services.MessageServices
     /// </summary>
     public record MessageBody
     {
-        public string id { get; private set; }
+        public string id { get; init; }
         public string Message { get; private set; }
         public bool Read { get; private set; }
         public bool IsDeleted { get; private set; }
         public DateTimeOffset LastModified { get; private set; }
-        public DateTimeOffset DateCreated { get; private set; }
+        public DateTimeOffset DateCreated { get; init; }
         public HashSet<string> Reactions { get; private set; } = new();
-        public MessageUser From {get; private set; }
-        public MessageUser To {get; private set; }
+        public MessageUser From {get; init; }
+        public MessageUser To {get; init; }
+
+
+        public static MessageBody CreateMessage(ChatMessage chat, MessageUser from, MessageUser to = null)
+        {
+            Contracts.RequiresNotNull(chat, "chat message is required");
+            Contracts.RequiresNotNull(from, "sender is required");
+            var message = new MessageBody 
+            {
+                id = Guid.NewGuid().ToString("N"),
+                Message = chat.Message,
+                LastModified = DateTimeOffset.UtcNow,
+                DateCreated = DateTimeOffset.UtcNow,
+                From = from,
+                To = to
+            };
+            message.EditMessage(chat.Message);
+            return message;
+        }
+
+        public void DeleteMessage()
+        {
+            this.IsDeleted = true;
+        }
+        
+        public void EditMessage(string message)
+        {
+            Contracts.EnsureNotNullOrEmpty(message);
+            this.Message = message;
+            this.LastModified = DateTimeOffset.UtcNow;
+        }
+
+        public void AddReaction(string reaction)
+        {
+
+            Contracts.EnsureNotNullOrEmpty(reaction);
+            this.Reactions.Add(reaction);
+        }
     }
 
     /// <summary>

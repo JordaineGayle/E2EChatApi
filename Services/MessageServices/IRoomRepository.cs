@@ -9,9 +9,32 @@ namespace E2ECHATAPI.Services.MessageServices
 {
     public interface IRoomRepository
     {
+        /// <summary>
+        /// Gets a single room by id from the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Room Get(string id);
+
+        /// <summary>
+        /// Gets all rooms a user is connected to
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IEnumerable<Room> GetRoomsByUserId(string id);
+
+        /// <summary>
+        /// Creates or update a room in the database
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public Task<Room> UpsertAsync(Room item);
+
+        /// <summary>
+        /// Deletes a room from the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<Room> DeleteAsync(string id);
     }
 

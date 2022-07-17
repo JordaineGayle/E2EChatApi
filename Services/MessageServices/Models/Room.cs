@@ -28,6 +28,7 @@ namespace E2ECHATAPI.Services.MessageServices
         public string OwnerId { get; private set; }
         public string Topic { get; private set; }
         public string Description { get; set; }
+        public bool LimitedReached => !RoomConfiguration.IsUnlimited ? Users.Count == RoomConfiguration.Limit : false;
         public RoomConfiguration RoomConfiguration { get; private set; }
         public IList<MessageUser> Users { get; private set; } = new List<MessageUser>() { };
         public IList<MessageBody> Messages { get; private set; } = new List<MessageBody>() { };
@@ -44,7 +45,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// </summary>
         /// <param name="request"></param>
         /// <param name="owner"></param>
-        public Room(CreateRoomRequest request, MessageUser owner)
+        public Room(CreateRoomRequest request, User owner)
         {
             Contracts.RequiresNotNull(request, "create room request is needed for this operation.");
             Contracts.RequiresNotNull(owner, "owner for the group is needed for this request.");
@@ -53,10 +54,22 @@ namespace E2ECHATAPI.Services.MessageServices
             this.Topic = request.Topic;
             this.Description = request.Description;
             this.RoomConfiguration = new(request.Limit, request.ReadReceipt, request.Reactions);
-            this.Users.Add(owner);
+            this.Users.Add(owner.CreateMessageUser(true));
             this.LastModified = DateTimeOffset.UtcNow;
             this.DateCreated = DateTimeOffset.UtcNow;
         }
+
+
+        /// <summary>
+        /// Gets a single message given the user id and the message id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public MessageBody GetMessage(string id, string userId)
+            => Messages.FirstOrDefault(x => x.id.EqualsIgnoreCase(id) 
+            && x.From.id.EqualsIgnoreCase(userId))
+            .EnsureNotNull();
 
         /// <summary>
         /// Updates the topic of the room
@@ -64,7 +77,8 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="topic"></param>
         public void UpdateTopic(string topic)
         {
-
+            Contracts.EnsureNotNullOrEmpty(topic, "topic is required for this request.");
+            this.Topic = topic;
         }
 
         /// <summary>
@@ -73,7 +87,8 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="desc"></param>
         public void UpdateDescription(string desc)
         {
-
+            Contracts.EnsureNotNullOrEmpty(desc, "description is required for this request.");
+            this.Description = desc;
         }
 
         /// <summary>
@@ -82,7 +97,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="limit"></param>
         public void UpdateLimit(int? limit)
         {
-
+            this.RoomConfiguration.SetLimit(limit);
         }
 
         /// <summary>
@@ -91,7 +106,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="val"></param>
         public void UpdateReadReceipt(bool val)
         {
-
+            this.RoomConfiguration.SetReadReceipt(val);
         }
 
         /// <summary>
@@ -100,7 +115,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="val"></param>
         public void UpdateReactions(bool val)
         {
-
+            this.RoomConfiguration.SetReactions(val);
         }
 
         /// <summary>
@@ -109,7 +124,21 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="user"></param>
         public void JoinRoom(MessageUser user)
         {
+            Contracts.RequiresNotNull(user, "message user is required for this operation.");
+            var exist = MessageUserExist(user.id);
+            if (exist)
+                throw new Exception("cannot join the same room twice.");
+            Users.Add(user);
+        }
 
+        /// <summary>
+        /// Removes a user from the room
+        /// </summary>
+        /// <param name="userId"></param>
+        public void LeaveRoom(string userId)
+        {
+            Contracts.EnsureNotNullOrEmpty(userId, "user id is required for this request.");
+            Users = Users.Where(x => !x.id.EqualsIgnoreCase(userId)).ToList();
         }
 
         /// <summary>
@@ -118,7 +147,21 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="message"></param>
         public void AddMessage(MessageBody message)
         {
+            Contracts.RequiresNotNull(message, "message is required for this operation.");
 
+            var fromuserExixst = MessageUserExist(message.From.id);
+
+            if(message.To != null)
+            {
+                var toUserExist = MessageUserExist(message.From.id);
+                if (!toUserExist)
+                    throw new Exception("the user you are sending this message to doesn't exist");
+            }
+
+            if(!fromuserExixst)
+                throw new Exception("you can't send a message to a group you haven't joined.");
+
+            Messages.Add(message);
         }
 
         /// <summary>
@@ -127,6 +170,9 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="request"></param>
         public void EditMessage(EditMessageRequest request)
         {
+            Contracts.RequiresNotNull(request, "edit message request is required for this operation.");
+            var message = GetMessage(request.MessageId, request.UserId);
+            message.EditMessage(request.Message);
 
         }
 
@@ -136,8 +182,18 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="request"></param>
         public void DeleteMessage(DeleteMessageRequest request)
         {
-
+            Contracts.RequiresNotNull(request, "delete message request is required for this operation.");
+            var message = GetMessage(request.MessageId, request.UserId);
+            message.DeleteMessage();
         }
+
+        /// <summary>
+        /// Checks if a user already exist in the room
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        bool MessageUserExist(string userId) 
+            => Users.FirstOrDefault(x => x.id.EqualsIgnoreCase(userId)) != null;
     }
 
     /// <summary>
