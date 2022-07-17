@@ -31,6 +31,13 @@ namespace E2ECHATAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "E2ECHATAPI", Version = "v1" });
+                c.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
+                {
+                    Description = "Api key needed to access the endpoints. (eg.) ApiKey: 12345",
+                    In = ParameterLocation.Header,
+                    Name = "ApiKey",
+                    Type = SecuritySchemeType.ApiKey
+                });
             });
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {

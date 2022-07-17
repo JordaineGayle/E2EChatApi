@@ -1,4 +1,5 @@
 ﻿using E2ECHATAPI.Services.UserServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ namespace E2ECHATAPI.Controllers
     [ApiController]
     public class UsersController : ParentController
     {
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MinifiedUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -34,6 +36,7 @@ namespace E2ECHATAPI.Controllers
             }
         }
 
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MinifiedUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -64,6 +67,7 @@ namespace E2ECHATAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MinifiedUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{fname}")]
         public async Task<IActionResult> UpdateUserFirstName(string fname)
@@ -71,7 +75,7 @@ namespace E2ECHATAPI.Controllers
             try
             {
                 var svc = await UserService.Instance.Value;
-                var res = svc.UpdateFirstNameAsync(RequestContext, fname);
+                var res = await svc.UpdateFirstNameAsync(RequestContext, fname);
                 return Ok(res);
             }
             catch (ArgumentException ex)
@@ -82,11 +86,16 @@ namespace E2ECHATAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MinifiedUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{lname}")]
         public async Task<IActionResult> UpdateUserLastName(string lname)
@@ -94,7 +103,7 @@ namespace E2ECHATAPI.Controllers
             try
             {
                 var svc = await UserService.Instance.Value;
-                var res = svc.UpdateLastNameAsync(RequestContext, lname);
+                var res = await svc.UpdateLastNameAsync(RequestContext, lname);
                 return Ok(res);
             }
             catch (ArgumentException ex)
@@ -105,11 +114,16 @@ namespace E2ECHATAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MinifiedUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{avatar}")]
         public async Task<IActionResult> UpdateUserAvatar(string avatar)
@@ -128,7 +142,11 @@ namespace E2ECHATAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
         }
     }
 }

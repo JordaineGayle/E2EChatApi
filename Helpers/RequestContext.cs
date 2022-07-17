@@ -23,7 +23,7 @@ namespace E2ECHATAPI.Helpers
     {
         public static RequestContext GetRequestContext(this ControllerBase controller)
         {
-            var exist = controller.HttpContext.Request.Headers.TryGetValue("apiKey", out StringValues item);
+            var exist = controller.HttpContext.Request.Headers.TryGetValue("ApiKey", out StringValues item);
             if (!exist)
                 throw new UnauthorizedAccessException($"Api key is required.");
 
