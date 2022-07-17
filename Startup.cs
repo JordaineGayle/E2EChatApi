@@ -32,6 +32,10 @@ namespace E2ECHATAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "E2ECHATAPI", Version = "v1" });
             });
+            services.AddControllers().AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
