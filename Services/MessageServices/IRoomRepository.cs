@@ -11,7 +11,7 @@ namespace E2ECHATAPI.Services.MessageServices
     {
         public Room Get(string id);
         public IEnumerable<Room> GetRoomsByUserId(string id);
-        public Task<Room> UpdateAsync(Room item);
+        public Task<Room> UpsertAsync(Room item);
         public Task<Room> DeleteAsync(string id);
     }
 
@@ -52,7 +52,7 @@ namespace E2ECHATAPI.Services.MessageServices
         public IEnumerable<Room> GetRoomsByUserId(string id)
             => rooms.Values.Where(x => x.Users.ToList().Exists(u => u.id.EqualsIgnoreCase(id)));
 
-        public async Task<Room> UpdateAsync(Room item)
+        public async Task<Room> UpsertAsync(Room item)
         {
             Contracts.RequiresNotNull(item, "room to be updated is required.");
             item = rooms.AddOrUpdate(item.id, item, (i, n) => item);

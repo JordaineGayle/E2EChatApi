@@ -11,7 +11,7 @@ namespace E2ECHATAPI.Services.UserServices
     {
         public User Get(string id);
         public User GetByEmail(string enail);
-        public Task<User> UpdateAsync(User item);
+        public Task<User> UpsertAsync(User item);
         public Task<User> DeleteAsync(string id);
     }
 
@@ -55,7 +55,7 @@ namespace E2ECHATAPI.Services.UserServices
             return user;
         }
 
-        public async Task<User> UpdateAsync(User item)
+        public async Task<User> UpsertAsync(User item)
         {
             Contracts.RequiresNotNull(item, "user to be updated is required.");
             item = users.AddOrUpdate(item.id, item, (i, n) => item);

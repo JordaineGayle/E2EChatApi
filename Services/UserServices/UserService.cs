@@ -38,5 +38,45 @@ namespace E2ECHATAPI.Services.UserServices
             return user;
         }
 
+        public async Task<MinifiedUser> RegisterUserAsync(RegisterUserRequest request)
+        {
+            var user = User.RegisterUser(request);
+            user = await db.UpsertAsync(user);
+            return user.CreateMinifiedUser();
+        }
+
+        public MinifiedUser Login(LoginRequest request)
+        {
+            var user = db.GetByEmail(request?.Email);
+            var res = user?.Login(request);
+            if (res == null)
+                throw new UnauthorizedAccessException("invalid credentials");
+            return res;
+        }
+
+        public async Task<MinifiedUser> UpdateFirstNameAsync(RequestContext ctx, string fname)
+        {
+            var user = GetUser(ctx.User.id);
+            user = user.UpdateFirstName(fname);
+            user = await db.UpsertAsync(user);
+            return user.CreateMinifiedUser();
+        }
+
+        public async Task<MinifiedUser> UpdateLastNameAsync(RequestContext ctx, string lname)
+        {
+            var user = GetUser(ctx.User.id);
+            user = user.UpdateLastName(lname);
+            user = await db.UpsertAsync(user);
+            return user.CreateMinifiedUser();
+        }
+
+        public async Task<MinifiedUser> UpdateAvatarAsync(RequestContext ctx, string avatar)
+        {
+            var user = GetUser(ctx.User.id);
+            user = user.UpdateAvatar(avatar);
+            user = await db.UpsertAsync(user);
+            return user.CreateMinifiedUser();
+        }
+
     }
 }
