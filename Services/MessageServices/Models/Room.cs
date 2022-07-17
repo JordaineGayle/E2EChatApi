@@ -75,8 +75,9 @@ namespace E2ECHATAPI.Services.MessageServices
         /// Updates the topic of the room
         /// </summary>
         /// <param name="topic"></param>
-        public void UpdateTopic(string topic)
+        public void UpdateTopic(string userId, string topic)
         {
+            ValidateUser(userId);
             Contracts.EnsureNotNullOrEmpty(topic, "topic is required for this request.");
             this.Topic = topic;
         }
@@ -85,8 +86,10 @@ namespace E2ECHATAPI.Services.MessageServices
         /// Updates the room description
         /// </summary>
         /// <param name="desc"></param>
-        public void UpdateDescription(string desc)
+        public void UpdateDescription(string userId, string desc)
         {
+
+            ValidateUser(userId);
             Contracts.EnsureNotNullOrEmpty(desc, "description is required for this request.");
             this.Description = desc;
         }
@@ -95,8 +98,10 @@ namespace E2ECHATAPI.Services.MessageServices
         /// Updates the user limit of room
         /// </summary>
         /// <param name="limit"></param>
-        public void UpdateLimit(int? limit)
+        public void UpdateLimit(string userId, int? limit)
         {
+
+            ValidateOwner(userId);
             this.RoomConfiguration.SetLimit(limit);
         }
 
@@ -104,8 +109,9 @@ namespace E2ECHATAPI.Services.MessageServices
         /// Updates the read receipt of the room
         /// </summary>
         /// <param name="val"></param>
-        public void UpdateReadReceipt(bool val)
+        public void UpdateReadReceipt(string userId, bool val)
         {
+            ValidateOwner(userId);
             this.RoomConfiguration.SetReadReceipt(val);
         }
 
@@ -113,8 +119,10 @@ namespace E2ECHATAPI.Services.MessageServices
         /// Updates room reaction
         /// </summary>
         /// <param name="val"></param>
-        public void UpdateReactions(bool val)
+        public void UpdateReactions(string userId, bool val)
         {
+
+            ValidateOwner(userId);
             this.RoomConfiguration.SetReactions(val);
         }
 
@@ -137,6 +145,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// <param name="userId"></param>
         public void LeaveRoom(string userId)
         {
+            ValidateUser(userId);
             Contracts.EnsureNotNullOrEmpty(userId, "user id is required for this request.");
             Users = Users.Where(x => !x.id.EqualsIgnoreCase(userId)).ToList();
         }
@@ -148,19 +157,11 @@ namespace E2ECHATAPI.Services.MessageServices
         public void AddMessage(MessageBody message)
         {
             Contracts.RequiresNotNull(message, "message is required for this operation.");
-
-            var fromuserExixst = MessageUserExist(message.From.id);
-
+            ValidateUser(message.From?.id);
             if(message.To != null)
             {
-                var toUserExist = MessageUserExist(message.From.id);
-                if (!toUserExist)
-                    throw new Exception("the user you are sending this message to doesn't exist");
+                ValidateUser(message.To?.id);
             }
-
-            if(!fromuserExixst)
-                throw new Exception("you can't send a message to a group you haven't joined.");
-
             Messages.Add(message);
         }
 
@@ -186,6 +187,21 @@ namespace E2ECHATAPI.Services.MessageServices
             var message = GetMessage(request.MessageId, request.UserId);
             message.DeleteMessage();
         }
+
+        public void ValidateUser(string userId)
+        {
+            if (!MessageUserExist(userId))
+                throw new UnauthorizedAccessException("cannot update a room you aren't apart of.");
+        }
+
+        public void ValidateOwner(string userId)
+        {
+            if (!IsOwner(userId))
+                throw new UnauthorizedAccessException("only the room owner can perform this update.");
+        }
+
+        public bool IsOwner(string id)
+            => id.EqualsIgnoreCase(OwnerId);  
 
         /// <summary>
         /// Checks if a user already exist in the room

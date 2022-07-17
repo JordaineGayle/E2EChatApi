@@ -79,7 +79,7 @@ namespace E2ECHATAPI.Services.MessageServices
         {
             Contracts.RequiresNotNull(item, "room to be updated is required.");
             item = rooms.AddOrUpdate(item.id, item, (i, n) => item);
-            await db.SaveAsync(item);
+            await db.SaveAsync(rooms);
             return item;
         }
 

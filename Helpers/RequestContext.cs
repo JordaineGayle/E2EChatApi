@@ -14,6 +14,7 @@ namespace E2ECHATAPI.Helpers
         readonly DateTimeOffset timestamp = DateTimeOffset.UtcNow;
         public User User { get; init; }
         public MinifiedUser MinifiedUser => User?.CreateMinifiedUser();
+        public MessageUser MessageUser => User?.CreateMessageUser();
         public CancellationToken Cancelled { get; init; }
         public DateTimeOffset Timestamp => this.timestamp;
         public DateTimeOffset UtcNow => DateTimeOffset.UtcNow;

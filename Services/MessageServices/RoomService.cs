@@ -31,6 +31,10 @@ namespace E2ECHATAPI.Services.MessageServices
             return new(db,userdb);
         }, true);
 
+        public Room GetRoom(string id) => db.Get(id).EnsureNotNull();
+
+        public Room TryGetRoom(string id) => db.Get(id);
+
         public async Task<Room> CreateRoomAsync(RequestContext ctx, CreateRoomRequest request)
         {
             var connectionId = GetConnectionId(ctx);
@@ -46,22 +50,50 @@ namespace E2ECHATAPI.Services.MessageServices
             return rooms;
         }
 
+        public async Task<Room> UpdateTopicAsync(RequestContext ctx, string roomId, string topic)
+        {
+            var connectionId = GetConnectionId(ctx);
+            var room = GetRoom(roomId);
+            room.UpdateTopic(ctx.User.id, topic);
+            room = await db.UpsertAsync(room);
+            await hub.Clients.GroupExcept(room.id, connectionId).RoomTopicUpdated(room);
+            return room;
+        }
+
+        public async Task<Room> UpdateDescriptionAsync(RequestContext ctx, string roomId, string desc)
+        {
+            var connectionId = GetConnectionId(ctx);
+            var room = GetRoom(roomId);
+            room.UpdateDescription(ctx.User.id, desc);
+            room = await db.UpsertAsync(room);
+            await hub.Clients.GroupExcept(room.id, connectionId).RoomDescriptionUpdated(room);
+            return room;
+        }
+
+        public async Task<Room> UpdateLimitAsync(RequestContext ctx, string roomId, int? limit)
+        {
+            var connectionId = GetConnectionId(ctx);
+            var room = GetRoom(roomId);
+            room.UpdateLimit(ctx.User.id, limit);
+            room = await db.UpsertAsync(room);
+            await hub.Clients.GroupExcept(room.id, connectionId).RoomUpdated(room);
+            return room;
+        }
+
         public async Task<Room> JoinRoomAsync(RequestContext ctx, string roomId)
         {
             var connectionId = GetConnectionId(ctx);
 
-            var room = db.Get(roomId);
-            if (room == null)
-                throw new Exception("unable to locate room.");
+            var room = GetRoom(roomId);
+
             if (room.LimitedReached)
                 throw new Exception("room has reached the maximum number of users.");
-                
             
             room.JoinRoom(ctx.User.CreateMessageUser());
             room = await db.UpsertAsync(room);
 
             await hub.Groups.AddToGroupAsync(connectionId, roomId, ctx.Cancelled);
-            await hub.Clients.Group(roomId).Joined(ctx.User.CreateMessageUser());
+            await hub.Clients.GroupExcept(room.id, connectionId).Joined(ctx.MessageUser);
 
             return room;
         }
@@ -70,21 +102,28 @@ namespace E2ECHATAPI.Services.MessageServices
         {
             var connectionId = GetConnectionId(ctx);
 
-            var room = db.Get(roomId);
-            if (room == null)
-                throw new Exception("unable to locate room.");
+            var room = GetRoom(roomId);
 
             room.LeaveRoom(ctx.User.id);
             room = await db.UpsertAsync(room);
 
             await hub.Groups.RemoveFromGroupAsync(connectionId, roomId, ctx.Cancelled);
-            await hub.Clients.Group(roomId).Left(ctx.User.CreateMessageUser());
+            await hub.Clients.GroupExcept(room.id, connectionId).Left(ctx.MessageUser);
         }
 
         public async Task SendMessageAsync(RequestContext ctx, ChatMessage message)
         {
             var connectionId = GetConnectionId(ctx);
-
+            var room = db.Get(message?.RoomId);
+            User to = null;
+            if(!(message?.Receiver?.IsNullOrEmptyWhitespace()??false))
+            {
+                to = userdb.Get(message.Receiver);
+            }
+            var msgBody = MessageBody.CreateMessage(message, ctx.MessageUser, to?.CreateMessageUser());
+            room.AddMessage(msgBody);
+            room = await db.UpsertAsync(room);
+            await hub.Clients.GroupExcept(room.id,connectionId).MessageReceived(msgBody);
         }
 
 

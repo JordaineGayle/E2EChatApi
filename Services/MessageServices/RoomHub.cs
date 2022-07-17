@@ -12,9 +12,9 @@ namespace E2ECHATAPI.Services.MessageServices
 {
     public interface IRoomHub
     {
-        Task MessageReceived(ChatMessage message);
-        Task MessageEdited(ChatMessage message);
-        Task MessageDeleted(ChatMessage message);
+        Task MessageReceived(MessageBody message);
+        Task MessageEdited(MessageBody message);
+        Task MessageDeleted(MessageBody message);
         Task RoomTopicUpdated(Room room);
         Task RoomDescriptionUpdated(Room room);
         Task RoomUpdated(Room room);

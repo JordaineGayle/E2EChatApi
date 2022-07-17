@@ -65,7 +65,7 @@ namespace E2ECHATAPI.Services.MessageServices
     /// </summary>
     public record ChatMessage
     {
-        public string RoomToken { get; set; }
+        public string RoomId { get; set; }
         public string Message { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }
@@ -84,12 +84,12 @@ namespace E2ECHATAPI.Services.MessageServices
         public ChatMessage(ChatMessage message)
         {
             Contracts.RequiresNotNull(message, "chat message is required.");
-            Contracts.EnsureNotNullOrEmpty(message.RoomToken, "a room token is required.");
+            Contracts.EnsureNotNullOrEmpty(message.RoomId, "a room token is required.");
             Contracts.EnsureNotNullOrEmpty(message.Sender, "sender is required.");
             Contracts.EnsureNotNullOrEmpty(message.Receiver, "receiver is required.");
             Contracts.EnsureNotNullOrEmpty(message.Receiver, "receiver is required.");
             Contracts.EnsureNotNullOrEmpty(message.Message, "message is required.");
-            this.RoomToken = message.RoomToken;
+            this.RoomId = message.RoomId;
             this.Message = message.Message;
             this.Sender = message.Sender;
             this.Receiver = message.Receiver;
