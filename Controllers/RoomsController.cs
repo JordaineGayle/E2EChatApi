@@ -107,12 +107,12 @@ namespace E2ECHATAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Route("api/rooms/{id}/JoinRoom")]
+        [Route("api/rooms/{id}/JoinRoom/{publicKey}")]
         [HttpPut]
-        public async Task<IActionResult> JoinRoom(string id)
+        public async Task<IActionResult> JoinRoom(string id, string publicKey)
         {
             var svc = await RoomService.Instance.Value;
-            var res = await svc.JoinRoomAsync(RequestContext, id);
+            var res = await svc.JoinRoomAsync(RequestContext, id, publicKey);
             return Ok(res);
         }
 

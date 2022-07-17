@@ -20,6 +20,7 @@ namespace E2ECHATAPI.Services.MessageServices
         Task RoomUpdated(Room room);
         Task Joined(MessageUser user);
         Task Left(MessageUser user);
+        Task KeyReceived(KeyExchange key);
     }
 
     public class RoomHub : Hub<IRoomHub>

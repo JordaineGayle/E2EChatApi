@@ -211,7 +211,7 @@ namespace E2ECHATAPI.Services.MessageServices
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        bool MessageUserExist(string userId) 
+        public bool MessageUserExist(string userId) 
             => Users.FirstOrDefault(x => x.id.EqualsIgnoreCase(userId)) != null;
     }
 

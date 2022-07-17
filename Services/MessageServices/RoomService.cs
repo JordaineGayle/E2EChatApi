@@ -87,8 +87,9 @@ namespace E2ECHATAPI.Services.MessageServices
             return room;
         }
 
-        public async Task<Room> JoinRoomAsync(RequestContext ctx, string roomId)
+        public async Task<Room> JoinRoomAsync(RequestContext ctx, string roomId, string publicKey)
         {
+            Contracts.EnsureNotNullOrEmpty(publicKey, "public key is required.");
             var connectionId = GetConnectionId(ctx);
 
             var room = GetRoom(roomId);
@@ -101,6 +102,7 @@ namespace E2ECHATAPI.Services.MessageServices
 
             await hub.Groups.AddToGroupAsync(connectionId, roomId, ctx.Cancelled);
             await hub.Clients.GroupExcept(room.id, connectionId).Joined(ctx.MessageUser);
+            await hub.Clients.GroupExcept(room.id, connectionId).KeyReceived(new(ctx.MessageUser,publicKey));
 
             return room;
         }

@@ -120,4 +120,9 @@ namespace E2ECHATAPI.Services.MessageServices
     /// Request to delete a message
     /// </summary>
     public record DeleteMessageRequest(string UserId, string MessageId);
+
+    /// <summary>
+    /// Public key exchange model
+    /// </summary>
+    public record KeyExchange(MessageUser User, string PublicKey);
 }
