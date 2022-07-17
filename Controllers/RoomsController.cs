@@ -94,7 +94,7 @@ namespace E2ECHATAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Route("api/rooms/{id}/UpdateDescription/{limit?}")]
+        [Route("api/rooms/{id}/UpdateLimit/{limit?}")]
         [HttpPut]
         public async Task<IActionResult> UpdateLimit(string id, int? limit)
         {
