@@ -123,12 +123,34 @@ namespace E2ECHATAPI.Services.UserServices
     /// <summary>
     /// User login request entity
     /// </summary>
-    public record LoginRequest(string Email, string Password);
+    public record LoginRequest
+    {
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
 
     /// <summary>
     /// Registration request entity
     /// </summary>
-    public record RegisterUserRequest([Required]string Email, [Required] string Password, [Required] string FirstName, [Required] string LastName, string Avatar);
+    public record RegisterUserRequest
+    {
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
+        [Required] 
+        public string FirstName { get; set; }
+
+        [Required] 
+        public string LastName { get; set; }
+        
+        public string Avatar { get; set; }
+    }
 
     /// <summary>
     /// Message user entity
