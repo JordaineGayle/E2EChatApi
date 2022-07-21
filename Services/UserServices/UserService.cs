@@ -30,6 +30,9 @@ namespace E2ECHATAPI.Services.UserServices
             return user;
         }
 
+        public Contact GetContact(RequestContext ctx, string id)
+            => db.Get(id).CreateContact();
+
         public User TryGetUser(string id)
         {
             var user = db.Get(id);
@@ -37,6 +40,16 @@ namespace E2ECHATAPI.Services.UserServices
                 return null;
             return user;
         }
+
+        public IReadOnlyList<MinifiedUser> GetAllUsers(RequestContext ctx)
+            => db.GetAll(ctx.User.id)
+                .Select(x => x.CreateMinifiedUser())
+                .ToArray();
+
+        public IReadOnlyList<Contact> GetContacts(RequestContext ctx)
+            => db.GetAll(ctx.User.id)
+                .Select(x => x.CreateContact())
+                .ToArray();
 
         public async Task<MinifiedUser> RegisterUserAsync(RegisterUserRequest request)
         {

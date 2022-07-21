@@ -13,6 +13,7 @@ namespace E2ECHATAPI.Services.UserServices
         public string id { get; init; }
         public string FirstName { get; init; }
         public string LastName { get; init; }
+        public string PublicKey { get; init; }
         public string Avater { get; init; }
         public string Email { get; init; }
         public string Password { get; init; }
@@ -35,6 +36,7 @@ namespace E2ECHATAPI.Services.UserServices
             Contracts.RequiresNotNull(dto, "user transfer object is required");
             Contracts.EnsureNotNullOrEmpty(dto.FirstName);
             Contracts.EnsureNotNullOrEmpty(dto.LastName);
+            Contracts.EnsureNotNullOrEmpty(dto.PublicKey);
             Contracts.EnsureNotNullOrEmpty(dto.Email);
             Contracts.EnsureNotNullOrEmpty(dto.Password);
             var user = new User 
@@ -43,6 +45,7 @@ namespace E2ECHATAPI.Services.UserServices
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Avater = dto.Avatar,
+                PublicKey = dto.PublicKey,
                 Email = dto.Email,
                 Password = dto.Password
             };
@@ -105,9 +108,9 @@ namespace E2ECHATAPI.Services.UserServices
         /// <param name="owner"></param>
         /// <returns>A compressed/minifed user for message visibility</returns>
 
-        public MessageUser CreateMessageUser(bool owner = false)
+        public MessageUser CreateMessageUser()
         {
-            return new(id,FullName,Avater,owner);
+            return new(id,FullName,Avater);
         }
 
         /// <summary>
@@ -117,6 +120,15 @@ namespace E2ECHATAPI.Services.UserServices
         public MinifiedUser CreateMinifiedUser()
         {
             return new(id, FirstName, LastName, Avater);
+        }
+
+        /// <summary>
+        /// Creates contact for the contact list
+        /// </summary>
+        /// <returns></returns>
+        public Contact CreateContact(bool online = false, DateTimeOffset? lastSeen = null)
+        {
+            return new(id, FullName, Email,online,lastSeen);
         }
     }
 
@@ -149,16 +161,20 @@ namespace E2ECHATAPI.Services.UserServices
         [Required] 
         public string LastName { get; set; }
         
+        public string PublicKey { get; set; }
+
         public string Avatar { get; set; }
     }
 
     /// <summary>
     /// Message user entity
     /// </summary>
-    public record MessageUser(string id, string Name, string Avatar, bool Owner = false);
+    public record MessageUser(string id, string Name, string Avatar);
 
     /// <summary>
     /// Minified user entity
     /// </summary>
     public record MinifiedUser(string Token, string FirstName, string LastName, string Avatar);
+
+    public record Contact(string id, string Name, string Email, bool IsOnline = false, DateTimeOffset? LastSeen = null);
 }

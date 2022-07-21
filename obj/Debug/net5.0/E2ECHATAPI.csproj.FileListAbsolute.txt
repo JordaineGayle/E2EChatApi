@@ -1,0 +1,7 @@
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.csprojAssemblyReference.cache
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.AssemblyInfoInputs.cache
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.AssemblyInfo.cs
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.csproj.CoreCompileInputs.cache
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Debug\net5.0\E2ECHATAPI.MvcApplicationPartsAssemblyInfo.cache

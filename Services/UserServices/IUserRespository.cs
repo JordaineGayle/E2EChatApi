@@ -16,6 +16,8 @@ namespace E2ECHATAPI.Services.UserServices
         /// <returns></returns>
         public User Get(string id);
 
+        public IEnumerable<User> GetAll(string id);
+
         /// <summary>
         /// Gets a user by email from the database
         /// </summary>
@@ -92,6 +94,12 @@ namespace E2ECHATAPI.Services.UserServices
             users.TryRemove(id, out User user);
             await db.SaveAsync(users);
             return user;
+        }
+
+        public IEnumerable<User> GetAll(string id)
+        {
+            var items = users.Values.Where(x => !x.id.EqualsIgnoreCase(id));
+            return items;
         }
     }
 }

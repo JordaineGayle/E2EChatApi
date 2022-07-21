@@ -1,10 +1,3 @@
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.csprojAssemblyReference.cache
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.AssemblyInfoInputs.cache
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.AssemblyInfo.cs
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.csproj.CoreCompileInputs.cache
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\appsettings.Development.json
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\appsettings.json
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\E2ECHATAPI.exe
@@ -18,6 +11,13 @@ C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\Microsoft.Ope
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\bin\Release\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.csprojAssemblyReference.cache
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.AssemblyInfoInputs.cache
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.AssemblyInfo.cs
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.csproj.CoreCompileInputs.cache
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\E2ECHATAPI.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\staticwebassets\E2ECHATAPI.StaticWebAssets.Manifest.cache
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\staticwebassets\E2ECHATAPI.StaticWebAssets.xml
 C:\Users\Jordaine Gayle\source\repos\E2ECHATAPI\obj\Release\net5.0\scopedcss\bundle\E2ECHATAPI.styles.css

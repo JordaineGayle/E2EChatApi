@@ -13,12 +13,9 @@ namespace E2ECHATAPI.Services.MessageServices
     public record MessageBody
     {
         public string id { get; init; }
-        public string Message { get; private set; }
-        public bool Read { get; private set; }
-        public bool IsDeleted { get; private set; }
-        public DateTimeOffset LastModified { get; private set; }
+        public string Message { get; init; }
+        public bool Read { get; init; }
         public DateTimeOffset DateCreated { get; init; }
-        public HashSet<string> Reactions { get; private set; } = new();
         public MessageUser From {get; init; }
         public MessageUser To {get; init; }
 
@@ -31,33 +28,19 @@ namespace E2ECHATAPI.Services.MessageServices
             {
                 id = Guid.NewGuid().ToString("N"),
                 Message = chat.Message,
-                LastModified = DateTimeOffset.UtcNow,
+                Read = false,
                 DateCreated = DateTimeOffset.UtcNow,
                 From = from,
                 To = to
             };
-            message.EditMessage(chat.Message);
             return message;
         }
 
-        public void DeleteMessage()
+        public MessageBody ReadMessage()
         {
-            this.IsDeleted = true;
-        }
-        
-        public void EditMessage(string message)
-        {
-            Contracts.EnsureNotNullOrEmpty(message);
-            this.Message = message;
-            this.LastModified = DateTimeOffset.UtcNow;
+            return this with { Read = true };
         }
 
-        public void AddReaction(string reaction)
-        {
-
-            Contracts.EnsureNotNullOrEmpty(reaction);
-            this.Reactions.Add(reaction);
-        }
     }
 
     /// <summary>
@@ -65,6 +48,7 @@ namespace E2ECHATAPI.Services.MessageServices
     /// </summary>
     public record ChatMessage
     {
+        public string ConversationId => Conversation.GenerateConversationKey(Sender, Receiver);
         public string Message { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }
@@ -83,46 +67,13 @@ namespace E2ECHATAPI.Services.MessageServices
         public ChatMessage(ChatMessage message)
         {
             Contracts.RequiresNotNull(message, "chat message is required.");
-            //Contracts.EnsureNotNullOrEmpty(message.RoomId, "a room token is required.");
-            Contracts.EnsureNotNullOrEmpty(message.Sender, "sender is required.");
-            Contracts.EnsureNotNullOrEmpty(message.Receiver, "receiver is required.");
             Contracts.EnsureNotNullOrEmpty(message.Message, "message is required.");
-            //this.RoomId = message.RoomId;
+            Contracts.EnsureNotNullOrEmpty(message.Receiver, "receiver is required.");
             this.Message = message.Message;
-            this.Sender = message.Sender;
             this.Receiver = message.Receiver;
         }
     }
 
-    /// <summary>
-    /// Request to edit a message
-    /// </summary>
-    public record EditMessageRequest
-    {
-        public string UserId { get; set; }
-        public string MessageId { get; set; }
-        public string Message { get; set; }
+    public record ConversationResponse(string PublicKey, string ConversationId);
 
-        public EditMessageRequest() { }
-
-        public EditMessageRequest(string userId, EditMessageRequest request)
-        {
-            Contracts.RequiresNotNull(request, "edit message request is required.");
-            Contracts.EnsureNotNullOrEmpty(userId, "user id is required for this request.");
-            Contracts.EnsureNotNullOrEmpty(request.MessageId, "message id is required.");
-            Contracts.EnsureNotNullOrEmpty(request.Message, "actual message is needed.");
-            this.MessageId = request.MessageId;
-            this.Message = request.Message;
-        }
-    }
-
-    /// <summary>
-    /// Request to delete a message
-    /// </summary>
-    public record DeleteMessageRequest(string UserId, string MessageId);
-
-    /// <summary>
-    /// Public key exchange model
-    /// </summary>
-    public record KeyExchange(MessageUser User, string PublicKey);
 }

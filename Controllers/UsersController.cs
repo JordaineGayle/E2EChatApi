@@ -13,6 +13,54 @@ namespace E2ECHATAPI.Controllers
     [ApiController]
     public class UsersController : ParentController
     {
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetContact(string id)
+        {
+            try
+            {
+                var svc = await UserService.Instance.Value;
+                var res = svc.GetContact(RequestContext,id);
+                return Ok(res);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetContacts()
+        {
+            try
+            {
+                var svc = await UserService.Instance.Value;
+                var res = svc.GetContacts(RequestContext);
+                return Ok(res);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+        }
+
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MinifiedUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
@@ -148,5 +196,6 @@ namespace E2ECHATAPI.Controllers
             }
 
         }
+
     }
 }

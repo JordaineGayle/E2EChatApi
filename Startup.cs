@@ -55,6 +55,20 @@ namespace E2ECHATAPI
                 .SetIsOriginAllowed((host) => true));
             });
 
+            
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ChatHubAuthPolicy", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.AuthenticationSchemes = new List<string> { "ChatHubAuthScheme" };
+                });
+            });
+
+
+            services.AddAuthentication()
+            .AddScheme<ChatHubAuthSchemeOptions, ChatHubAuthHandler>("ChatHubAuthScheme", options => { });
 
             services.AddSignalR(hubOptions =>
             {
@@ -65,9 +79,6 @@ namespace E2ECHATAPI
             }).AddJsonProtocol(options => {
                 options.PayloadSerializerOptions.PropertyNamingPolicy = null;
             });
-
-            //not the best thing to do
-            RoomClient.Instance = services.BuildServiceProvider().GetService<RoomClient>();
 
         }
 
@@ -89,13 +100,14 @@ namespace E2ECHATAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
 
-                endpoints.MapHub<RoomHub>("/e2echat", (e) =>
+                endpoints.MapHub<ChatHub>("/e2echat", (e) =>
                 {
                     e.Transports =
                     HttpTransportType.WebSockets |
