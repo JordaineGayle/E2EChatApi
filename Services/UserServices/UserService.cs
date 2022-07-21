@@ -54,6 +54,9 @@ namespace E2ECHATAPI.Services.UserServices
         public async Task<MinifiedUser> RegisterUserAsync(RegisterUserRequest request)
         {
             var user = User.RegisterUser(request);
+            var exist = db.GetByEmail(request.Email.ToLower());
+            if (exist != null)
+                throw new InvalidOperationException("please sign in instead of creating a new account.");
             user = await db.UpsertAsync(user);
             return user.CreateMinifiedUser();
         }

@@ -48,10 +48,11 @@ namespace E2ECHATAPI.Services.MessageServices
     /// </summary>
     public record ChatMessage
     {
-        public string ConversationId => Conversation.GenerateConversationKey(Sender, Receiver);
         public string Message { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }
+        public DateTimeOffset Date { get; set; }
+        public string ConversationId => Conversation.GenerateConversationKey(Sender, Receiver);
 
         /// <summary>
         /// Default constrcutor

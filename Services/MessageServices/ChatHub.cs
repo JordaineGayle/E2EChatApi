@@ -17,7 +17,7 @@ namespace E2ECHATAPI.Services.MessageServices
 {
     public interface IChatHub
     {
-        public Task MessageReceived(string message);
+        public Task MessageReceived(string conversationId, string message);
         public Task ConversationStarted(ConversationResponse response);
         public Task Connected(Contact contact);
         public Task Disconnected(Contact contact);
@@ -48,7 +48,7 @@ namespace E2ECHATAPI.Services.MessageServices
             {
                 foreach(var message in messages)
                 {
-                    await Clients.Caller.MessageReceived(message.Message);
+                    await Clients.Caller.MessageReceived(message.ConversationId,message.Message);
                 }
             }
 
@@ -86,8 +86,6 @@ namespace E2ECHATAPI.Services.MessageServices
 
         public async Task SendMessage(string userId, string message)
         {
-            message = new(message);
-
             var svc = await UserService.Instance.Value;
 
             var user = svc.GetUser(userId);
@@ -96,12 +94,13 @@ namespace E2ECHATAPI.Services.MessageServices
             {
                 Sender = Context.UserIdentifier,
                 Receiver = user.id,
-                Message = message
+                Message = message,
+                Date = DateTimeOffset.UtcNow
             };
 
             conversations.TryGetValue(chat.ConversationId, out Conversation conversation);
 
-            conversation.AddMessage(chat);
+            conversation?.AddMessage(chat);
 
             users.TryGetValue(userId, out User receiver);
 
@@ -116,7 +115,7 @@ namespace E2ECHATAPI.Services.MessageServices
                 queued.AddOrUpdate(userId, messages, (key, o) => messages);
             }
 
-            await Clients.User(userId).MessageReceived(message);
+            await Clients.User(userId).MessageReceived(chat.ConversationId,message);
         }
 
         public async Task RetrieveContactsOnline()
